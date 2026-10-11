@@ -10,7 +10,7 @@ mapbox_token: ''
 # ── 外观 ─────────────────────────────────────────────────────────────────────
 
 # 头像 URL（支持本地路径或远程图片链接）
-avatar: 'https://cdn.jsdelivr.net/gh/coutureone/gitblog@master/img/20260705100413907.jpg'
+avatar: 'https://cdn.jsdelivr.net/gh/xcouturecc/gitblog@master/img/20260705100413907.jpg'
 
 # 默认语言：zh（中文）| en（英文）
 locale: en

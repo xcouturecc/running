@@ -4,4 +4,4 @@
 ## [我的跑步记录](https://run.xcouture.cc/)
 >读万卷书，不如行万里路，希望也能坚持跑到10000公里的那一天~
 
-[![running](https://github.com/coutureone/running/blob/master/assets/github.svg)](https://run.xcouture.cc/)
+[![running](https://github.com/xcouturecc/running/blob/master/assets/github.svg)](https://run.xcouture.cc/)
