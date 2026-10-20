@@ -21,22 +21,27 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-6 lg:grid-cols-[1fr_auto_1fr]">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <span className="text-base font-bold tracking-tight whitespace-nowrap text-[var(--color-text)] sm:text-xl">
+          <span className="text-sm font-bold tracking-tight whitespace-nowrap text-[var(--color-text)] sm:text-xl">
             Couture&apos;s Running
           </span>
         </div>
 
+        <p className="col-span-2 row-start-2 m-0 text-center text-xs leading-relaxed tracking-wider text-[var(--color-muted)] sm:text-sm lg:col-span-1 lg:col-start-2 lg:row-start-1">
+          <span className="inline-block">物来顺应，未来不迎，</span>
+          <span className="inline-block">当时不杂，既过不恋</span>
+        </p>
+
         {/* Right nav */}
-        <div className="flex items-center gap-2 sm:gap-6">
+        <div className="col-start-2 row-start-1 flex items-center gap-2 justify-self-end sm:gap-6 lg:col-start-3">
           {navItems.map((item) => (
             <button
               type="button"
               key={item.page}
               onClick={() => onNavigate(item.page)}
-              className={`cursor-pointer border-0 bg-transparent p-0 text-xs transition-colors sm:text-sm ${
+              className={`cursor-pointer border-0 bg-transparent p-0 text-xs whitespace-nowrap transition-colors sm:text-sm ${
                 item.page === page
                   ? 'font-medium text-[var(--color-accent)]'
                   : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'
