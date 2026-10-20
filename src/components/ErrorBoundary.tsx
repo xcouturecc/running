@@ -29,6 +29,14 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleRetry = () => {
+    if (
+      /dynamically imported module|module script|loading chunk|importing a module/i.test(
+        this.state.message
+      )
+    ) {
+      window.location.reload();
+      return;
+    }
     resetActivityData();
     this.setState({ hasError: false, message: '' });
   };
