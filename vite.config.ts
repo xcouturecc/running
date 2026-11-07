@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import yaml from '@modyfi/vite-plugin-yaml';
 import svgr from 'vite-plugin-svgr';
+import { optimize } from 'svgo';
 
 const colorClassMapping: { [key: string]: string } = {
   '#1a1a1a': 'svg-color-bg',
@@ -26,7 +27,17 @@ export default defineConfig({
       svgrOptions: {
         exportType: 'named',
         namedExport: 'ReactComponent',
-        plugins: ['@svgr/plugin-svgo', '@svgr/plugin-jsx'],
+        // Use SVGO directly: the upstream wrapper installs vulnerable deepmerge.
+        plugins: [
+          (code, config, state) =>
+            config.svgo === false
+              ? code
+              : optimize(code, {
+                  ...config.svgoConfig,
+                  path: state.filePath,
+                }).data,
+          '@svgr/plugin-jsx',
+        ],
         svgoConfig: {
           floatPrecision: 2,
           plugins: [
