@@ -33,3 +33,4 @@ openai==1.88.0
 certifi>=2026.10.18
 pillow>=13.0.0
 oauthlib>=4.0.1
+soupsieve>=4.0.0
