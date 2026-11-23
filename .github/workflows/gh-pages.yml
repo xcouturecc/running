@@ -2,6 +2,12 @@ name: Publish GitHub Pages
 
 # Controls when the action will run.
 on:
+  # Rebuild the site when deployment workflow itself is repaired.
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/gh-pages.yml'
   workflow_dispatch:
     inputs:
       save_data_in_github_cache:
@@ -30,17 +36,11 @@ concurrency:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build_and_deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    # The type of runner that the job will run on
+  # Build and upload first; Pages may not immediately list freshly uploaded artifacts.
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pages: write
-      id-token: write
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -105,6 +105,34 @@ jobs:
           # Upload dist repository
           name: pages-artifact
           path: './dist'
+  # Separate deploy job prevents the upload/deploy same-job metadata race.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Wait for Pages artifact visibility
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            count="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" --jq '[.artifacts[] | select(.name == "pages-artifact" and .expired == false)] | length' 2>/dev/null || true)"
+            if [ "$count" = "1" ]; then
+              echo "Pages artifact is visible."
+              exit 0
+            fi
+            echo "Waiting for Pages artifact (attempt $attempt/12; count=${count:-unknown})."
+            sleep 5
+          done
+          echo "::error::Pages artifact was not visible within 60 seconds."
+          exit 1
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
